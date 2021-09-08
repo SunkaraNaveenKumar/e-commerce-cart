@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Functionality</title>
+</head>
+<body>
+    <html>
+        <head>
+            <title>
+                Sample Title 
+            </title>
+       <style>
+    #root{
+               background-color:darkgray;
+         }
+           .list{
+    display: inline-block;
+    width: 15%;
+    height: auto;
+    margin: 20px;
+    padding: 20px;
+    border: 3px solid white;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+.list:hover{
+    background-color:white;
+   
+}
+.list .img{
+    display: block;
+    width: 100%;
+    height: 30vh;
+}
+
+@media screen and (max-width:800px) {
+
+    .list{
+        display: block;
+        width: 40%;
+
+    }
+    .list .img{
+        display: block;
+        width: 100%;
+        height: 20vh;
+    }
+}
+       </style>
+    </head>
+        <body>
+            <div id="root">
+    
+            </div>
+   
+            <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+            <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+            <script crossorigin src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    
+            <script type="text/babel">
+               const rootHandle = document.getElementById('root')
+               const menuItems =[
+                   {id:1,name:'McVeggies',price:125,isveg:true,image:"https://images.pexels.com/photos/2987564/pexels-photo-2987564.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
+                   {id:2,name:'Mcdonalds',price:130,isveg:true,image:"https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
+                   {id:3,name:'fish center',price:200,isveg:false,image:"https://images.pexels.com/photos/7616677/pexels-photo-7616677.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"},
+                   {id:4,name:'five star',price:65,isveg:false,image:"https://images.pexels.com/photos/1260968/pexels-photo-1260968.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"},
+                   {id:5,name:'kfc',price:90,isveg:false,image:"https://b.zmtcdn.com/data/brand_creatives/logos/80c09d718acddee05a655eb378bb442f_1617875125.png?output-format=webp"},
+                   {id:6,name:'Empire',price:700,false:true,image:"https://b.zmtcdn.com/data/brand_creatives/logos/7a7904eff687a7456599074a4e7d2335_1617875100.png?output-format=webp"}
+               ]
+               const {useState} = React 
+             
+               //////////////////////////////////////////////
+               function MyCart(props)
+               {
+                   const {items,removeItem,display,display1} = props
+
+                   return(
+                       <div>
+                        
+                                <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>price</th>
+                                <th>Quantity</th>
+                                <th>subtottal</th>
+                                <th>actions</th>
+                                </tr>
+                            </thead>
+                            {items.map(ele=>{
+                            return  (
+                            <tbody>
+                                <tr>
+                                    <td>{ele.name}</td>
+                                    <td>{ele.price}</td>
+                                    <td><button onClick={()=>{display(ele.id) }} disabled={ele.quantity === 1}>-</button>{ele.quantity} <button onClick={()=>display1(ele.id)}>+</button></td>
+                                    <td>{ele.quantity*ele.price}</td>
+                                    <td><button onClick={()=>{removeItem(ele.id)}}>Remove</button></td>
+                                    </tr>
+                                </tbody>) })}
+                        </table>
+                         
+                        </div>
+                      
+                   )
+               }
+               ///////////////////////////////////////
+               function DashBoard(props)
+               {
+                   const {Items,callBack}=props
+                   return(
+                       <div className={"list"}>
+                               <img className={"img"} src={Items.image} alt="img"/>
+                               <h4>{Items.isveg ? <img src="https://i.ibb.co/cNfHy3b/green-dot.png"/>:<img src="https://i.ibb.co/jhPVt09/red-dot.png"/>}{Items.name + ' - INR ' + Items.price}</h4> 
+                               
+                                <button onClick={()=>{callBack(Items)}}>ADD</button>
+                       
+                        </div>
+                      
+                   )
+                    }
+               ///////////////////////////////////////confirm oredr button
+               function ConfirmOrder(props)
+               {
+                   const {display10}=props
+             
+                   return ( <button onClick={display10}>  confirm Order </button> )
+               }
+               //////////////////////////////veg or non veg display
+               function VegorNonveg(props)
+               {
+                  
+                   const {vegDisplay,nonvegDisplay,menuItems,handleType,type}=props
+                   return(
+                       <div>
+                        <input type="radio" value='veg' onChange={handleType} checked={type=='veg'}/> veg
+                        <input type="radio" value='nonveg'onChange={handleType}  checked={type=='nonveg'}/>Non-veg
+                        </div>
+                   )
+               }
+               //////////////////////////////////////// total
+               function Total(props)
+              {
+                  const {cart}=props
+                  function display()
+                  {
+                   const sum= cart.map(ele=>{
+                          return ele.quantity*ele.price
+                      }).reduce(function(acc,curr){
+                          return acc+curr
+                      },0)
+                      return sum+(sum*5/100)
+                  }
+                  return(
+                      <div>
+                        <h6>SGST-2.5%</h6>
+                        <h6>CGST-2.5%</h6>
+                        <h4>Total-{display()}</h4>
+                      
+            
+                        </div>
+                      
+                  )
+              }
+             ///////////////////////////////////////////////////////////////// Main app component
+ function App(props)
+              {
+                  const {menuItems}=props
+                  const {useState}=React 
+     const [cart,setCart]=useState([])
+                  function callBack(Items){
+                  const result1=[...cart]
+                   let flag = false
+                 result1.forEach(ele=>{
+                    
+                       if(ele.id==Items.id)
+                       {
+                        flag=true
+                      display1(Items.id)
+                       }
+                   })
+                   if(!flag)
+                   {
+                 const   result =[...cart,{...Items,quantity:1}]
+        setCart(result)
+                   }
+     
+
+                  }
+                  function removeItem(id)
+                  {
+                      const input = confirm('Are u sure u want to remove the item?')
+                      if(input)
+                      {
+                        const result = cart.filter(ele=>{
+                          return ele.id!=id
+                      })
+                      setCart(result)
+                      }
+                     
+                  }
+                  function display(id)
+                  {
+                    const result = cart.map(ele=>{
+                        if(ele.id==id && ele.quantity!=1){
+             return  {...ele,quantity:ele.quantity-1}
+
+                        }
+                            else
+                            {
+                 return {...ele}
+                            }
+                    })
+                    setCart(result)
+                  }
+                  ///////////////////////////
+                  function display1(id)
+                  {
+                      
+                    const result = cart.map(ele=>{
+                        if(ele.id==id ){
+             return  {...ele,quantity:ele.quantity+1}
+
+                        }
+                            else
+                            {
+               return {...ele}
+                            }
+                    })
+                    setCart(result)
+                  }
+                  /////////////////////////////////
+                 
+              /////////////////////////////////////
+             const display10=()=>{
+                 setCart([])
+                 setMain(menuItems)
+                 setType('')
+                 setSort('sort')
+             }
+             /////////////////////////////                mainBoard
+
+             const[mainBoard,setMain]=useState(menuItems)
+          ////////////////////////////////////////////////
+             const [sort,setSort]=useState('sort')
+
+             const handleSort=(e)=>{
+                 setSort(e.target.value)
+                 let result
+                if(e.target.value==='high to low price')
+                {
+                    result=[...mainBoard].sort((a,b)=>b.price-a.price)
+                    setMain(result)
+
+                }
+                if(e.target.value ==='low to high price')
+                {
+                    result=[...mainBoard].sort((a,b)=>a.price-b.price)
+                    setMain(result)
+                }
+              
+             }
+
+             /////////////////////////////////////// vrg or nonveg 
+             const [type,setType]=useState('')
+             const handleType=(e)=>{
+                 setType(e.target.value)
+                 if(e.target.value=='veg')
+                 {
+                    const result = menuItems.filter(ele=>{
+                     return ele.isveg
+                 })
+                 setSort('sort')
+                 setMain(result)
+                 }
+                 else if(e.target.value=='nonveg')
+                 {
+                    const result =menuItems.filter(ele=>{
+                 return !ele.isveg
+                 })
+                 setSort('sort')
+                 setMain(result)
+                 }
+             }
+            //////////////////////////////////////
+                  ///////////////////////////////////////// Main App return
+                  return(
+                      <div>
+             <h1>Customer Kiosk </h1>
+             <br/>
+               <h3>Choose Items</h3>
+               <VegorNonveg menuItems={menuItems} type={type} handleType={handleType}/>
+               
+               <form action="">
+                <select name="sorting" id="" value={sort} onChange={handleSort}>
+                <option value="sort">Sort</option>
+                <option value="high to low price">High-Low price</option>
+                <option value="low to high price">Low-High price</option>
+                </select>
+                </form>
+              
+               {mainBoard.map(ele=>{
+                return <DashBoard Items={ele} callBack={callBack} /> 
+
+               })}
+               <hr/>
+               <h2>My Cart</h2>
+{cart.length>0 ? (<div><MyCart items={cart} removeItem={removeItem} display={display} display1={display1}/>
+  <hr/>  <h1><Total cart={cart}/></h1>
+    <ConfirmOrder leng={cart.length} display10={display10}/>
+    </div>
+    ):(
+        <div>
+            <h2>My cart is empty</h2>
+            <hr/>
+            <h1>Have a Happy meals!</h1>
+            </div>
+    )
+} <hr/>
+ </div>
+                  )
+              }
+             
+               ReactDOM.render(<App menuItems={menuItems}/>,rootHandle)
+            </script>
+        </body>
+    </html> 
+</body>
+</html>
